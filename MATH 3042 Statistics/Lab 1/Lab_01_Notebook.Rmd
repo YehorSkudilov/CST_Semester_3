@@ -2,7 +2,10 @@
 title: "Lab Assignment 1 - Data in R"
 author: "Carl Gladish"
 date: "Sept 2, 2026"
-output: html_notebook
+output:
+  html_notebook: default
+  pdf_document: default
+  word_document: default
 ---
 
 ### What Is This?
@@ -23,7 +26,7 @@ The objectives of this lab assignment are for you to learn how:
 
 ## 1. What is an R Notebook?
 
-This document is an example of an *R notebook*. An R notebook is a mixture of written text and R code stored in a single file (extension .Rmd). It is written using a simple "markdown language". (For instance, you can create bold text like this:  **stats is fun**.)
+This document is an example of an *R notebook*. An R notebook is a mixture of written text and R code stored in a single file (extension .Rmd). It is written using a simple "markdown language". (For instance, you can create bold text like this: **stats is fun**.)
 
 R Notebooks are a good way to organize your work, since it makes it easy to present your findings and to make sure your work is *reproducible* (since you can just re-run the entire notebook).
 
@@ -47,7 +50,10 @@ At any time, you can create a *preview* of an R notebook, which is a nice-lookin
 
 Insert an R code chunk below this text. In the code chunk, assign the number 16 to a variable $t$ and then evaluate $t^2$.
 
-[code goes here]
+```{r}
+t = 16
+t^2
+```
 
 #### Task 2
 
@@ -109,7 +115,7 @@ e\^(i*t) = (1 - 1/2!*t\^2 + 1/4!*t\^4 + ...) + i*(t - 1/3!*t\^3 + 1/5!*t\^5 + ..
 
 Pretty:
 
-[your answer here]
+$e^{it} = \left(1 - \frac{1}{2!} t^2 \right)$
 
 Note: You do **not** need to learn Latex for MATH 3042. The aim here is for you to have some idea why equations look like they do in an R notebook.
 
@@ -145,7 +151,10 @@ data(TenMileRace)
 To practice what we just did for `mosaic`, write R code to check if your computer has the library `dplyr` installed. If not, then install it. Then load the `dplyr` library.
 
 ```{r}
-
+if (!require("dplyr", quietly=TRUE)) {
+  install.packages("dplyr")
+}
+library(dplyr)
 ```
 
 We will use `dplyr` later in the lab.
@@ -225,6 +234,9 @@ Or, you can specify a list of consecutive numbers using the colon (:) notation.
 Write an expression to return the `state` for the first 50 runners in the data frame.
 
 ```{r}
+
+TenMileRace[1:50, "state"]
+TenMileRace$state[1:50]
 
 ```
 
@@ -312,7 +324,7 @@ sum( TenMileRace$time < 3000)
 Write an expression that returns a data frame for all runner from the `state` of "Ethiopia".
 
 ```{r}
-
+TenMileRace[TenMileRace$state=="Ethiopia", ]
 ```
 
 #### Task 8
@@ -320,7 +332,9 @@ Write an expression that returns a data frame for all runner from the `state` of
 Write an R expression to return the `sex` of all "slow runners", meaning those with `net` time *larger* than 10,000 seconds. How many such runners are there?
 
 ```{r}
-
+slowRunners = TenMileRace[TenMileRace$net>10000, "sex"]
+slowRunners
+length(slowRunners)
 ```
 
 ### Subsetting
@@ -350,7 +364,8 @@ subset(TenMileRace, (sex=="F") & (age>65) & !(state=="VA"))
 Use `subset` to write an R expression that returns all rows of `TenMileRace` with runners whose `net` is between 3000 seconds and 10000 seconds (including endpoints). Assign this to a variable `mid.runners`. Then write an expression to return the number of runners in this subset.
 
 ```{r}
-
+mid.runners = subset(TenMileRace, net >= 3000 & net <= 100000)
+length(mid.runners)
 ```
 
 #### Task 10
@@ -358,7 +373,7 @@ Use `subset` to write an R expression that returns all rows of `TenMileRace` wit
 Use `subset` to pull out the data frame containing all Female ("F") runners from Russia or Kenya.
 
 ```{r}
-
+subset(TenMileRace, sex == "F" & (state == "Russia" | state =="Kenya"))
 ```
 
 #### Task 11
@@ -368,7 +383,8 @@ Write R code to obtain the data frame of all runners who are *not* from the USA.
 *Hint: the state codes for all USA runners are exactly two characters (like "VA"). Use `nchar(as.character(state))` to count the number of characters.*
 
 ```{r}
-
+usa.runners = subset(TenMileRace, nchar(as.character(state))==2)
+usa.runners
 ```
 
 ### Using `droplevels`
@@ -401,7 +417,9 @@ table(my.subset$state)
 Use `subset` and `droplevels` and `table` to produce a frequency table showing the number of USA runners from each state. (The table should not show any other `state` categories.)
 
 ```{r}
-
+usa.runners = subset(TenMileRace, nchar(as.character(state))==2)
+usa.runners <- droplevels( usa.runners )
+table(usa.runners$state)
 ```
 
 #### Task 13
@@ -409,7 +427,10 @@ Use `subset` and `droplevels` and `table` to produce a frequency table showing t
 **Challenging** Use the function `which.max` (and other stuff) to print out which US state had the most runners. *Hint: help(which.max)*
 
 ```{r}
-
+usa.runners = subset(TenMileRace, nchar(as.character(state))==2)
+usa.runners <- droplevels( usa.runners )
+most.runners.state = which.max(usa.runners$state[1])
+usa.runners$state[most.runners.state]
 ```
 
 ## Filtering with `dplyr`
@@ -460,6 +481,13 @@ max( race.times )
 Use `filter` and `mean` to calculate separately the average Male and Female `net` times.
 
 ```{r}
+m.runners = subset(TenMileRace, sex == "M")
+f.runners = subset(TenMileRace, sex == "F")
+
+mean(m.runners$net)
+mean(f.runners$net)
+
+t.test(m.runners$net, f.runners$net)
 
 ```
 
@@ -572,9 +600,7 @@ These problems are meant to be done with paper and pencil (and scientific calcul
     | 0.741 | 0.740 | 0.742 | 0.748 | 0.732 | 0.750 | 0.747 | 0.750 | 0.752 |
     :::
 
-
-2.  Calculate the mean and standard deviation of the diameter $X$ of steel rods
-from a sample of 350 rods.
+2.  Calculate the mean and standard deviation of the diameter $X$ of steel rods from a sample of 350 rods.
 
     | **Diameter (mm)** | **Frequency** |
     |-------------------|---------------|
@@ -583,7 +609,6 @@ from a sample of 350 rods.
     | 10.02             | 100           |
     | 10.03             | 90            |
     | 10.04             | 45            |
-
 
 3.  The daily opening price of gold (C\$ per oz) for the last ten days of Aug 2026 are given below.
 
@@ -608,10 +633,7 @@ from a sample of 350 rods.
         | 6127.91                         |
         :::
 
-
 4.  Hank and Pete work in a fabrication facility. Records indicate that Hank completes an average of 62 items per shift, with a standard deviation of 4.2 items. Pete completes an average of 59 items per shift, with a standard deviation of 4.1 items. Which of the two would you consider to be the more consistent worker? Explain.
-
-
 
 5.  Suppose a lumber mill ships 4x4’s with a mean moisture content of $\mu=18\%$ and $\sigma=0.5\%$. A histogram reveals that the data is bell-shaped.
 
@@ -624,8 +646,6 @@ from a sample of 350 rods.
     d.  Use the Empirical Rule to estimate the percentage of values between 18% and 18.5%.
 
     e.  Building specifications require that the moisture content be under 19% to be closed in. Use the Empirical Rule to estimate the percentage of 4x4’s that are suitable to be closed in.
-    
-
 
 6.  Human body temperatures have a mean of $98.20 ^\circ F$ and a standard deviation of $0.62 ^\circ F$. Determine whether each of the following temperatures is usual or unusual:
 
@@ -634,7 +654,6 @@ from a sample of 350 rods.
     |-------------------|------------------|------------------|
     | $101.00 ^\circ F$ | $96.90 ^\circ F$ | $96.98 ^\circ F$ |
     :::
-
 
 7.  The two sets of sample data below (Site A and Site B) are measurements of the drainage rate of the soil in two different building sites (in $litre / m^2\cdot s$).
 
@@ -658,4 +677,3 @@ from a sample of 350 rods.
     |          | 3.31     |
     |          | 3.1      |
     :::
-

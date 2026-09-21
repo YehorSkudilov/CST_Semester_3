@@ -17,6 +17,8 @@
 <div id="index" style="display:block">
  <p id="listView">List Files Here</p>
  <button onclick="handleFileListing()">List</button>
+ <br>
+ <img id="myImg" src="" width="107" height="98">
 </div>
 </div>
 <div id="delete" style="display:block">
@@ -40,7 +42,7 @@ function handleFileListing() {
    const xhttp = new XMLHttpRequest();
    xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
-      document.getElementById("listView").innerHTML = this.responseText;
+      document.getElementById("myImg").src = this.responseText;
     }
   };
    xhttp.open("GET", "/triviaapi/trivia/Id=1");

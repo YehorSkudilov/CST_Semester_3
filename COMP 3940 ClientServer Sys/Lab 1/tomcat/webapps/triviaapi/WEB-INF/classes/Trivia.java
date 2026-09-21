@@ -30,21 +30,9 @@ public class Trivia extends HttpServlet {
          //Use the path info and parameter map to find out the details of the get request
          System.out.println(request.getPathInfo());
          System.out.println(request.getParameterMap());
-         //use the resource Values to find out the details of the request and respond accordingly
-         File dir = new File("c:\\tomcat\\webapps\\triviaapi\\images");
-         String[] fileList = dir.list();
-         //use jason-io or Gson as opposed to buildng your own json array.
-         if (fileList != null && fileList.length > 0) {
-            String jsonArray = "[";
-            for (int i  = 0; i < fileList.length; i++) {
-               jsonArray += fileList[i];
-               jsonArray += ",";
-            }
-            jsonArray += "]";
-            PrintWriter out = response.getWriter();  
-            out.println(jsonArray); 
-         }
-         response.setStatus(200);   
+         PrintWriter out = response.getWriter();
+         out.println("images/image.png");
+         response.setStatus(200);
       }
    }
    protected void doPut(HttpServletRequest request, HttpServletResponse response)

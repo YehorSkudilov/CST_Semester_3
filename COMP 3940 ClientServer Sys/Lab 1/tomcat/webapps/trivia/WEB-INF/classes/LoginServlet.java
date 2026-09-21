@@ -33,18 +33,18 @@ out.println("<html>\n" + "<head><title>" + "Login" + "</title></head>\n" +
       response.setContentType("text/html");
       String errMsg = "";
       Connection con = null;
+      String username = request.getParameter("user_id");
+      String password = request.getParameter("password");
+      boolean authenticated = false;
       try {
          try { Class.forName("oracle.jdbc.OracleDriver"); } catch (Exception ex) {        System.out.println(">>Driver Exception\n\n"); }
          con = DriverManager.getConnection("jdbc:oracle:thin:@localhost:49732:XE", "system", "oracle1"); //replace 49732 with the output of netstat -a -b for oracle.exe
-         Statement stmt2 = con.createStatement();
-         ResultSet rs = stmt2.executeQuery("select * from accounts");
-        System.out.println(">>Reading Selectt\n\n");
-         while (rs.next()) {
-            String username = rs.getString("username");
-            String password = rs.getString("password");
-            System.out.println("   " + username + "  " + password);
-	 }
-         stmt2.close();
+         PreparedStatement pstmt = con.prepareStatement("select * from accounts where username = ? and password = ?");
+         pstmt.setString(1, username);
+         pstmt.setString(2, password);
+         ResultSet rs = pstmt.executeQuery();
+         authenticated = rs.next();
+         pstmt.close();
          con.close();
          System.out.println("\n\n");
       } catch(SQLException ex) {
@@ -59,16 +59,16 @@ out.println("<html>\n" + "<head><title>" + "Login" + "</title></head>\n" +
 System.out.println(errMsg);
 
       }
-    PrintWriter out = response.getWriter();
-      response.setContentType("text/html");
 
+      if (!authenticated) {
+         response.setStatus(302);
+         response.sendRedirect("login");
+         return;
+      }
 
-		String title = "Logged in as: ";
-		String username = request.getParameter("user_id");
-		String password = request.getParameter("password");
-		HttpSession session = request.getSession(true);
-		session.setAttribute("USER_ID", username);
-		response.setStatus(302);
-		response.sendRedirect("main");
+      HttpSession session = request.getSession(true);
+      session.setAttribute("USER_ID", username);
+      response.setStatus(302);
+      response.sendRedirect("main");
 	}
 }

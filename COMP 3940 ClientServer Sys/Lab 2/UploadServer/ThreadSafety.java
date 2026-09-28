@@ -21,13 +21,13 @@ public class ThreadSafety implements Runnable{
       synchronized(this) {
 
          if (Thread.currentThread().getName().contains("T1")) {
-
+while (shared == 0) {
             try {
 
                      this.wait();
 
             } catch (InterruptedException e) { }
-
+        }
          }  
 
          int copy = shared;

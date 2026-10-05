@@ -1,6 +1,7 @@
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.util.Arrays;
 public class UploadServlet extends HttpServlet {
    protected void doPost(HttpServletRequest request, HttpServletResponse response) {
       try {
@@ -24,6 +25,7 @@ public class UploadServlet extends HttpServlet {
          StringBuilder html = new StringBuilder();
          html.append("<h2>Uploaded ").append(savedName).append("</h2><ul>");
          String[] chld = dir.list();
+         Arrays.sort(chld);
          for (int i = 0; i < chld.length; i++) {
             html.append("<li>").append(chld[i]).append("</li>");
          }

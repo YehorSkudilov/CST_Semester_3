@@ -10,6 +10,8 @@ public class HttpServletRequest {
    private String fileName = null;
    private byte[] fileData = null;
    private boolean parsed = false;
+   private String method = null;
+   private String path = null;
 
    public HttpServletRequest(InputStream inputStream) {
       this.inputStream = inputStream;
@@ -18,6 +20,13 @@ public class HttpServletRequest {
       this.inputStream = inputStream;
       this.headers = headers;
    }
+   public HttpServletRequest(InputStream inputStream, Map<String, String> headers, String method, String path) {
+      this(inputStream, headers);
+      this.method = method;
+      this.path = path;
+   }
+   public String getMethod() {return method;}
+   public String getPath() {return path;}
    public InputStream getInputStream() {return inputStream;}
 
    // header names are stored lower-case

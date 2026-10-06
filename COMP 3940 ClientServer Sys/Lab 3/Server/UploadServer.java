@@ -10,7 +10,6 @@ public class UploadServer {
             System.err.println("Could not listen on port: 8082.");
             System.exit(-1);
         }
-        // Thread pool: 10 worker threads are reused instead of a new Thread per request
         ExecutorService pool = Executors.newFixedThreadPool(10);
         System.out.println("Listening on http://localhost:8082/");
         while (true) {

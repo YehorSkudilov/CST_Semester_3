@@ -1,8 +1,6 @@
 import java.io.*;
 import java.util.*;
 import java.util.stream.*;
-// DAO (structural): UploadServlet saves and lists files through this class
-// instead of touching the file system directly.
 public class FileDAO {
    private final File dir;
    public FileDAO(String dir) {

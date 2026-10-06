@@ -16,7 +16,7 @@ public class LoggingAspect implements InvocationHandler {
       try {
          return method.invoke(target, args);
       } catch (InvocationTargetException e) {
-         throw e.getCause(); // rethrow the real exception (e.g. UploadException)
+         throw e.getCause();
       }
    }
 }

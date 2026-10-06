@@ -12,6 +12,10 @@ public class UploadServerThread implements Runnable {
          HttpServletResponse res = new HttpServletResponse(socket.getOutputStream());
          try {
             String[] firstLine = readLine(in).split(" ");
+            if (firstLine.length < 2) { // empty/idle connection (e.g. browser preconnect)
+               socket.close();
+               return;
+            }
             String method = firstLine[0];
             String path = firstLine[1];
 

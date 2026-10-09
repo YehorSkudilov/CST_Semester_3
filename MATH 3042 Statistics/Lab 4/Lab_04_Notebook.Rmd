@@ -350,7 +350,19 @@ You should as much as possible use `replicate()` rather than `for`-loops. (Using
 What happens to the variability in the estimated $P(\textrm{H})$ as $m$ increases?
 
 ```{r}
-#your code
+
+ms = c(10^{1:5})
+s = numeric(length(ms))
+r.reps = 100
+
+for(i in 1:length(ms)){
+  m = ms[i]
+  Prob.E.Ests = replicate(r.reps, Prob.Heads(m))
+  s[i] = sd(Prob.E.Ests)
+  cat(paste0("m = ", m, ", s = ", s[i], "\n"))
+}
+
+
 ```
 
 | $m$ (trials) | $s$ for $100$ estimates of $P(\textrm{H})$ |
@@ -402,7 +414,18 @@ The title of your bar plot should be "Simulated Die Rolls (<m> Trials)", where <
 Run your function for `m` $=100$, $1000$, and $10000$. Looking at the three graphs, what is happening as `m` increases?
 
 ```{r}
-#your code
+Roll.Dice = function(m){
+  results = replicate(m, sample(6, 1))
+  
+  
+  
+  barplot(prop.table(table(results)), col="lightblue", main=(paste0("Simulated Die Rolls (", m, " Trials)")),
+         xlab="X = die value", ylab="rel. freq.")
+}
+
+Roll.Dice(100)
+Roll.Dice(1000)
+Roll.Dice(10000)
 ```
 
 Answer: 
@@ -440,7 +463,15 @@ Run `Roll.Some.Dice(m, n)` with `m= 10 000` for each of the following:
 Examine all five bar plots. What is happening as `n` increases? Explain in a sentence or two.
 
 ```{r}
-#your code
+Roll.Some.Dice = function(m,n){
+  X.vals <- replicate(m, sum(sample.int(6, n, replace=TRUE)==3))
+  X.tab <- table(X.vals)
+  
+  X.tab
+barplot(X.tab, col = ("pink"), xlab="X = # 3s", ylab="Frequency", main = paste0("Number of 3s Out of ", n, " Dice (Based on ", m," Trials)"))
+}
+
+Roll.Some.Dice(10^4, 100)
 ```
 
 Answer:
@@ -481,7 +512,16 @@ Examine all ten histograms. Answer the questions:
 - What consistent relationship is there between the `replace=TRUE` graphs and the corresponding `replace=FALSE` graphs?
 
 ```{r}
-#your code
+library(lattice)
+
+Draw.Cards = function(m, n, replace, col){
+deck <- c(rep("R", 26), rep("B", 26))
+X.vals <- replicate(m, sum(sample(deck, n, replace) == "R"))
+  
+  histogram(X.vals, col = col, type="d", breaks=seq(-0.5, n+0.5, by=1), xlab="X = # red cards", ylab="Prob. Density", main=paste0("Number of Red Cards Out of ",n, " Cards (", m, " Trials)"))
+}
+
+Draw.Cards(10^4, 1, TRUE, col="pink")
 ```
 
 Answers: 

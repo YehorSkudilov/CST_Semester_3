@@ -9,14 +9,22 @@ fun main() {
         }
 
         override fun missionProgress() {
-            println("...")
+            for(i in 1..3){
+                println("...")
+            }
         }
 
         override fun missionComplete(minion: Minion, message: String) {
-            println("The ${minion.race} has returned with: $message")
+            println("The ${minion.race} has returned with: $message\n")
         }
     }
 
-    missionManager.select(Hunt(Elf()), missionListener)
-    missionManager.selectRepeatable(Gather(Dwarf()), 3, missionListener)
+    print("Choose a minion (1 = Dwarf, 2 = Elf): ")
+    val minion = when (readln().trim()) {
+        "2" -> Elf()
+        else -> Dwarf()
+    }
+
+    missionManager.select(Hunt(minion), missionListener)
+    missionManager.selectRepeatable(Gather(minion), 3, missionListener)
 }

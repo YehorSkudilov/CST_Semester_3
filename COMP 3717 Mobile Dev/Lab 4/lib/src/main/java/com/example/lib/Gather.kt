@@ -15,4 +15,10 @@ class Gather(minion: Minion): Mission(minion), Repeatable {
         }
     }
 
+    override fun repeat(int: Int, missionListener: MissionListener) {
+        repeat(int) {
+            start(missionListener)
+        }
+    }
+
 }
